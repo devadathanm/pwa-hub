@@ -3,201 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Command Center</title>
+  <title>App Hub</title>
+  
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
-  <style>
-    :root {
-      --bg-color: #0a0a0c;
-      --card-bg: rgba(25, 25, 30, 0.6);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-sub: #9ca3af;
-      --glow-color: rgba(0, 255, 163, 0.4);
-      --accent: #00ffa3;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      overflow-x: hidden;
-      perspective: 1000px;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-      transform: translateZ(20px);
-    }
-
-    header h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.05em;
-      margin-bottom: 6px;
-      background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    header .subtitle {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--text-sub);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    header .subtitle::before {
-      content: '';
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background-color: var(--accent);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--glow-color);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 20px;
-      width: 100%;
-      max-width: 500px;
-      transform-style: preserve-3d;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text-main);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
-                  box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
-                  border-color 0.4s ease;
-      transform-style: preserve-3d;
-      transform: translateZ(0px);
-    }
-
-    .card:active {
-      transform: scale(0.95) translateZ(10px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(0, 255, 163, 0.15);
-    }
-
-    .icon-container {
-      width: 56px;
-      height: 56px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
-      transform: translateZ(15px);
-    }
-
-    .card:active .icon-container {
-      transform: translateZ(25px) scale(1.05);
-      background: rgba(0, 255, 163, 0.05);
-      border-color: rgba(0, 255, 163, 0.3);
-    }
-
-    .icon-container svg {
-      width: 26px;
-      height: 26px;
-      fill: none;
-      stroke: var(--text-main);
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: stroke 0.3s ease;
-    }
-
-    .card:active svg {
-      stroke: var(--accent);
-    }
-
-    .card span {
-      font-size: 0.95rem;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      transform: translateZ(10px);
-      color: var(--text-main);
-    }
-
-    /* Target specific rules for standalone PWA screen optimization */
-    @media (display-mode: standalone) {
-      body {
-        padding-top: 60px; /* Safe padding for iPhone notch */
-      }
-    }
-  </style>
+  <meta name="apple-mobile-web-app-title" content="Terminal">
+  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
-  <header>
-    <h1>Command Center</h1>
-    <div class="subtitle">Secure Connection</div>
+<header>
+    <h1>Workspace</h1>
+    <div class="subtitle">Quick Access</div>
   </header>
 
-  <div class="grid">
-    <a href="https://github.com" class="card">
-      <div class="icon-container">
-        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-      </div>
-      <span>Repositories</span>
+  <main class="app-grid">
+    
+    <a href="apps/calculator/index.html" class="app-card card-counter">
+      <div class="app-icon"><ion-icon name="calculator-outline"></ion-icon></div>
+      <h3>Counter</h3>
     </a>
 
-    <a href="https://dash.cloudflare.com" class="card">
-      <div class="icon-container">
-        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-      </div>
-      <span>Cloudflare</span>
+    <a href="#" class="app-card card-settings">
+      <div class="app-icon"><ion-icon name="settings-outline"></ion-icon></div>
+      <h3>Settings</h3>
     </a>
 
-    <a href="#" class="card">
-      <div class="icon-container">
-        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-      </div>
-      <span>Terminal</span>
+    <a href="#" class="app-card card-weather">
+      <div class="app-icon"><ion-icon name="partly-sunny-outline"></ion-icon></div>
+      <h3>Weather</h3>
     </a>
 
-    <a href="#" class="card">
-      <div class="icon-container">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      </div>
-      <span>Settings</span>
+    <a href="#" class="app-card card-clock">
+      <div class="app-icon"><ion-icon name="time-outline"></ion-icon></div>
+      <h3>Clock</h3>
     </a>
-  </div>
 
+  </main>
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  
+  <script src="main.js"></script>
 </body>
 </html>

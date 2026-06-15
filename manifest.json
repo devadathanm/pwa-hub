@@ -1,11 +1,10 @@
 {
-  "name": "Terminal Hub",
-  "short_name": "Hub",
+  "name": "My App Hub",
+  "short_name": "AppHub",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#000000",
+  "background_color": "#ffffff",
   "theme_color": "#000000",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
