@@ -22,6 +22,8 @@ body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative; /* Added to keep shapes behind the apps */
+  z-index: 1;         /* Added to keep shapes behind the apps */
 }
 
 /* Background Animation Engine */
@@ -54,7 +56,6 @@ h1 {
 /* 2. FUTURE-PROOF COMPACTABLE GRID */
 .app-grid {
   display: grid;
-  /* auto-fill mathematically fits as many apps as possible, scaling perfectly */
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 20px;
   width: 85%;
@@ -68,8 +69,8 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border-radius: 24px; /* iOS standard curvature */
-  aspect-ratio: 1 / 1; /* Keeps apps perfectly square no matter how many you add */
+  border-radius: 24px;
+  aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,7 +89,6 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* Premium Icon Sizing */
 ion-icon {
   font-size: 42px;
 }
@@ -100,8 +100,77 @@ ion-icon {
   letter-spacing: 0.3px;
 }
 
-/* 4. INDIVIDUAL GLOW COLORS FOR FUTURE APPS */
+/* 4. INDIVIDUAL GLOW COLORS */
 .card-counter ion-icon { color: #45f3ff; filter: drop-shadow(0 0 12px rgba(69, 243, 255, 0.6)); }
 .card-settings ion-icon { color: #bc13fe; filter: drop-shadow(0 0 12px rgba(188, 19, 254, 0.6)); }
 .card-weather ion-icon { color: #ffeb3b; filter: drop-shadow(0 0 12px rgba(255, 235, 59, 0.6)); }
 .card-clock ion-icon { color: #ff3b30; filter: drop-shadow(0 0 12px rgba(255, 59, 48, 0.6)); }
+
+/* =========================================
+   5. NEW: 3D FLOATING BACKGROUND SHAPES 
+   ========================================= */
+
+.bg-shapes-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Forces shapes behind everything else */
+  overflow: hidden;
+  perspective: 1000px;
+}
+
+.shape {
+  position: absolute;
+  /* Glassmorphism neon look */
+  background: linear-gradient(135deg, rgba(69, 243, 255, 0.08) 0%, rgba(69, 243, 255, 0) 100%);
+  border: 1px solid rgba(69, 243, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 0 30px rgba(69, 243, 255, 0.05);
+  will-change: transform;
+  animation: float3D 20s infinite linear;
+}
+
+/* Top Left Floating Square (Blue/Cyan) */
+.shape-1 {
+  width: 180px;
+  height: 180px;
+  top: 5%;
+  left: -5%;
+  animation-duration: 28s;
+}
+
+/* Bottom Right Massive Polygon (Purple) */
+.shape-2 {
+  width: 320px;
+  height: 320px;
+  bottom: -15%;
+  right: -10%;
+  background: linear-gradient(135deg, rgba(188, 19, 254, 0.08) 0%, rgba(188, 19, 254, 0) 100%);
+  border-color: rgba(188, 19, 254, 0.15);
+  animation-duration: 35s;
+  animation-direction: reverse;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+/* Center Right Small Fast Cube (Yellow) */
+.shape-3 {
+  width: 90px;
+  height: 90px;
+  top: 40%;
+  right: 15%;
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08) 0%, rgba(255, 235, 59, 0) 100%);
+  border-color: rgba(255, 235, 59, 0.15);
+  animation-duration: 18s;
+}
+
+/* The 3D Rotation Engine */
+@keyframes float3D {
+  0% { transform: translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  33% { transform: translateY(-40px) rotateX(120deg) rotateY(60deg) rotateZ(45deg); }
+  66% { transform: translateY(20px) rotateX(240deg) rotateY(120deg) rotateZ(90deg); }
+  100% { transform: translateY(0) rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
+}
