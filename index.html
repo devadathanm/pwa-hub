@@ -2,20 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My App Hub</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>App Hub</title>
+  
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
   
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="AppHub">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Terminal">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
-  <h1>My Personal Workspace</h1>
-  <p>App links will go here soon.</p>
 
+  <header>
+    <h1>Terminal</h1>
+    <div class="subtitle">System Online</div>
+  </header>
+
+  <main class="app-grid">
+    
+    <a href="apps/calculator/index.html" class="app-card card-counter">
+      <div class="app-icon"><ion-icon name="calculator-outline"></ion-icon></div>
+      <h3>Counter</h3>
+    </a>
+
+    <a href="#" class="app-card card-settings">
+      <div class="app-icon"><ion-icon name="settings-outline"></ion-icon></div>
+      <h3>Settings</h3>
+    </a>
+
+    <a href="#" class="app-card card-weather">
+      <div class="app-icon"><ion-icon name="partly-sunny-outline"></ion-icon></div>
+      <h3>Weather</h3>
+    </a>
+
+    <a href="#" class="app-card card-clock">
+      <div class="app-icon"><ion-icon name="time-outline"></ion-icon></div>
+      <h3>Clock</h3>
+    </a>
+
+  </main>
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  
   <script src="main.js"></script>
 </body>
 </html>
