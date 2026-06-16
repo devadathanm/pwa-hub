@@ -11,7 +11,8 @@
   <style>
     html, body {
       margin: 0; padding: 0;
-      width: 100vw; height: 100vh; 
+      width: 100vw; 
+      height: 100dvh; /* FIXED: Now uses Dynamic Viewport Height */
       min-height: -webkit-fill-available;
       overscroll-behavior-y: none;
       background-color: #050508;
@@ -113,7 +114,8 @@
       display: flex; flex-direction: column; align-items: center;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 20px 40px rgba(0, 0, 0, 0.5);
       width: 85vw; max-width: 350px;
-      height: 80vh; max-height: 700px;
+      height: 82dvh; /* FIXED: Now uses Dynamic Viewport Height */
+      max-height: 700px;
       overflow-y: auto;
       animation: fadeInDown 0.8s ease-out;
     }
