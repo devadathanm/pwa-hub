@@ -6,32 +6,79 @@
   <title>Weather</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0a0c">
   
   <style>
-    /* iOS Viewport Lock & Cinematic Background */
     html, body {
       margin: 0; padding: 0;
       width: 100vw; height: 100vh; 
       min-height: -webkit-fill-available;
       overscroll-behavior-y: none;
-      background: linear-gradient(-45deg, #09090e, #13131f, #0c0c16, #050508);
-      background-size: 400% 400%;
-      animation: ambientGlow 20s ease infinite;
+      background-color: #050508;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
       color: #ffffff;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       overflow: hidden;
       padding-top: env(safe-area-inset-top);
       padding-bottom: env(safe-area-inset-bottom);
+      position: relative;
     }
 
-    @keyframes ambientGlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* --- DYNAMIC BACKGROUND EFFECTS LAYER --- */
+    #bg-fx {
+      position: fixed; 
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      transition: all 2s ease;
     }
 
-    /* Top Navigation */
+    .fx-clear-day {
+      background: radial-gradient(circle at 50% 0%, rgba(255, 235, 59, 0.25), transparent 70%);
+      animation: pulseSun 6s infinite alternate ease-in-out;
+    }
+    @keyframes pulseSun { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.2); opacity: 1; } }
+
+    .fx-clear-night {
+      background: radial-gradient(circle at 50% 0%, rgba(69, 243, 255, 0.15), transparent 70%);
+    }
+
+    .fx-clouds {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 50%),
+                  radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1), transparent 50%);
+      background-size: 200% 200%;
+      animation: driftClouds 8s infinite alternate ease-in-out;
+    }
+    @keyframes driftClouds { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+    .fx-rain {
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.4) 0%, transparent 50%);
+      background-size: 100% 150%;
+      animation: rainFall 0.6s linear infinite;
+    }
+    @keyframes rainFall { 0% { background-position: 0% -150%; } 100% { background-position: 0% 150%; } }
+
+    .fx-snow {
+      background-image: radial-gradient(rgba(255,255,255,0.7) 2px, transparent 2px),
+                        radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px);
+      background-size: 100px 100px, 60px 60px;
+      background-position: 0 0, 30px 30px;
+      animation: snowDrift 3s linear infinite;
+    }
+    @keyframes snowDrift { 0% { background-position: 0 0, 30px 30px; } 100% { background-position: 100px 100px, 90px 90px; } }
+
+    .fx-storm {
+      background-color: #050508;
+      animation: lightningFlash 5s infinite;
+    }
+    @keyframes lightningFlash {
+      0%, 94%, 100% { background-color: #050508; }
+      95% { background-color: rgba(188, 19, 254, 0.4); } 
+      97% { background-color: rgba(255, 255, 255, 0.6); } 
+      98% { background-color: #050508; }
+    }
+    /* -------------------------------------- */
+
     .nav-bar {
       position: absolute;
       top: env(safe-area-inset-top, 20px);
@@ -51,159 +98,180 @@
       font-size: 14px;
       font-weight: 500;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 8px;
     }
 
-    .back-btn:active {
-      transform: scale(0.92);
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    /* Premium Glass UI for Weather */
     .weather-card {
+      position: relative;
+      z-index: 5;
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       border-radius: 40px;
-      padding: 50px 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+      padding: 30px;
+      display: flex; flex-direction: column; align-items: center;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 20px 40px rgba(0, 0, 0, 0.5);
-      animation: floatCard 6s infinite ease-in-out;
-      width: 85%;
-      max-width: 350px;
+      width: 85vw; max-width: 350px;
+      height: 80vh; max-height: 700px;
+      overflow-y: auto;
+      animation: fadeInDown 0.8s ease-out;
     }
 
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
+
+    .weather-card::-webkit-scrollbar { display: none; }
 
     .status-text {
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #a1a1aa;
+      font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      color: #a1a1aa; margin-bottom: 5px; text-align: center;
+    }
+
+    .live-time {
+      font-size: 14px; color: #ffffff; font-weight: 600;
       margin-bottom: 20px;
+      background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 12px;
     }
 
-    .temp-display {
+    .hero-icon {
       font-size: 80px;
-      font-weight: 700;
-      line-height: 1;
       margin-bottom: 10px;
-      background: linear-gradient(180deg, #ffffff, #a1a1aa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+      animation: floatIcon 6s infinite ease-in-out;
     }
 
-    .condition-display {
-      font-size: 22px;
-      font-weight: 500;
-      margin-bottom: 30px;
-      color: #ffeb3b;
-      filter: drop-shadow(0 0 12px rgba(255, 235, 59, 0.6));
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.05); }
     }
 
-    .details-row {
-      display: flex;
-      gap: 30px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 25px;
-      width: 100%;
-      justify-content: center;
+    .temp-display { font-size: 70px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+    .condition-display { font-size: 20px; font-weight: 500; margin-bottom: 25px; }
+
+    .data-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 15px; width: 100%; border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px; margin-bottom: 20px;
     }
 
-    .detail-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .data-box {
+      background: rgba(255,255,255,0.03); border-radius: 20px; padding: 15px;
+      display: flex; flex-direction: column; align-items: center;
     }
 
-    .detail-label {
-      font-size: 11px;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
+    .data-box ion-icon { font-size: 24px; margin-bottom: 5px; color: #a1a1aa; }
+    .data-label { font-size: 11px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 1px; }
+    .data-value { font-size: 16px; font-weight: 600; margin-top: 4px; }
+
+    .forecast-title {
+      font-size: 12px; letter-spacing: 2px; color: #a1a1aa;
+      text-transform: uppercase; margin-bottom: 15px; width: 100%; text-align: left;
     }
 
-    .detail-value {
-      font-size: 18px;
-      font-weight: 600;
+    .forecast-row { display: flex; justify-content: space-between; width: 100%; gap: 10px; }
+    .forecast-day {
+      display: flex; flex-direction: column; align-items: center;
+      background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px 10px; flex: 1;
     }
-    
-    .loader {
-      font-size: 16px;
-      color: #a1a1aa;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
+    .forecast-day ion-icon { font-size: 24px; margin: 8px 0; }
+    .f-date { font-size: 12px; color: #a1a1aa; }
+    .f-temp { font-size: 14px; font-weight: 600; }
   </style>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
 
-  <div class="nav-bar">
-    <a href="/" class="back-btn">
-      <ion-icon name="chevron-back-outline"></ion-icon> Hub
-    </a>
-  </div>
+  <div id="bg-fx" class=""></div>
+
+  <div class="nav-bar"><a href="/" class="back-btn"><ion-icon name="chevron-back-outline"></ion-icon> Hub</a></div>
 
   <div class="weather-card" id="app-container">
-    <div class="loader" id="loading-text">Locating Signal...</div>
+    <div style="color: #a1a1aa; margin-top: 50px; font-size: 14px; animation: pulse 1.5s infinite;">Syncing Atmosphere...</div>
   </div>
 
-<script>
+  <script>
     const appContainer = document.getElementById('app-container');
+    const bgFxLayer = document.getElementById('bg-fx');
 
-    const weatherCodes = {
-      0: "Clear Sky", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
-      45: "Foggy", 61: "Slight Rain", 63: "Moderate Rain", 95: "Thunderstorm"
+    const formatTime = (isoString) => new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const getDayName = (isoString) => new Date(isoString).toLocaleDateString('en-US', { weekday: 'short' });
+
+    const getWeatherDetails = (code, isDay) => {
+      if (code <= 1) return { text: "Clear", icon: isDay ? "sunny" : "moon", color: isDay ? "#ffeb3b" : "#45f3ff", bgClass: isDay ? "fx-clear-day" : "fx-clear-night" };
+      if (code <= 3) return { text: "Cloudy", icon: isDay ? "partly-sunny" : "cloudy-night", color: "#a1a1aa", bgClass: "fx-clouds" };
+      if (code < 50) return { text: "Fog", icon: "cloud", color: "#6b7280", bgClass: "fx-clouds" };
+      if (code < 70) return { text: "Rain", icon: "rainy", color: "#3b82f6", bgClass: "fx-rain" };
+      if (code < 80) return { text: "Snow", icon: "snow", color: "#ffffff", bgClass: "fx-snow" };
+      return { text: "Storm", icon: "thunderstorm", color: "#bc13fe", bgClass: "fx-storm" };
     };
 
-    // This function fetches weather for any location
-    const fetchWeather = async (lat, lon, label = "Current Location") => {
+    const fetchWeather = async (lat, lon, label) => {
       try {
-        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=3`);
         const data = await response.json();
-        const weather = data.current_weather;
         
-        appContainer.innerHTML = `
+        const current = data.current_weather;
+        const daily = data.daily;
+        
+        // --- REAL LIVE WEATHER DATA ---
+        const details = getWeatherDetails(current.weathercode, current.is_day); 
+        // ------------------------------
+        
+        bgFxLayer.className = details.bgClass;
+
+        const liveTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        let html = `
           <div class="status-text">${label}</div>
-          <div class="temp-display">${Math.round(weather.temperature)}°</div>
-          <div class="condition-display">${weatherCodes[weather.weathercode] || "Conditions"}</div>
-          <div class="details-row">
-            <div class="detail-item"><span class="detail-label">Wind</span><span class="detail-value">${Math.round(weather.windspeed)} km/h</span></div>
+          <div class="live-time">${liveTime}</div>
+          <ion-icon name="${details.icon}" class="hero-icon" style="color: ${details.color}; filter: drop-shadow(0 0 20px ${details.color}80);"></ion-icon>
+          <div class="temp-display">${Math.round(current.temperature)}°</div>
+          <div class="condition-display" style="color: ${details.color};">${details.text}</div>
+          
+          <div class="data-grid">
+            <div class="data-box"><ion-icon name="water-outline"></ion-icon><span class="data-label">Wind</span><span class="data-value">${Math.round(current.windspeed)} km/h</span></div>
+            <div class="data-box"><ion-icon name="thermometer-outline"></ion-icon><span class="data-label">High / Low</span><span class="data-value">${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°</span></div>
+            <div class="data-box"><ion-icon name="sunrise-outline" style="color: #ff9800;"></ion-icon><span class="data-label">Sunrise</span><span class="data-value">${formatTime(daily.sunrise[0])}</span></div>
+            <div class="data-box"><ion-icon name="sunset-outline" style="color: #ff5722;"></ion-icon><span class="data-label">Sunset</span><span class="data-value">${formatTime(daily.sunset[0])}</span></div>
           </div>
+
+          <div class="forecast-title">3-Day Forecast</div>
+          <div class="forecast-row">
         `;
-      } catch (e) {
-        appContainer.innerHTML = `<div class="status-text" style="color:#ff3b30;">Signal Lost</div>`;
+
+        for(let i = 0; i < 3; i++) {
+          let dayDetails = getWeatherDetails(daily.weathercode[i], 1);
+          html += `
+            <div class="forecast-day">
+              <span class="f-date">${i === 0 ? 'Today' : getDayName(daily.time[i])}</span>
+              <ion-icon name="${dayDetails.icon}" style="color: ${dayDetails.color};"></ion-icon>
+              <span class="f-temp">${Math.round(daily.temperature_2m_max[i])}°</span>
+            </div>
+          `;
+        }
+
+        html += `</div>`;
+        appContainer.innerHTML = html;
+
+      } catch (error) {
+        appContainer.innerHTML = `<div class="status-text" style="color:#ff3b30;">Atmosphere Sync Failed</div>`;
       }
     };
 
-    // GPS Logic with Fallback
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
-        () => fetchWeather(51.5074, -0.1278, "London (Fallback)"), // Fallback to London if GPS denied
-        { timeout: 5000 } // 5-second limit
+        (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude, "Current Location"),
+        () => fetchWeather(9.9312, 76.2673, "Kochi (Fallback)"),
+        { timeout: 1500 } 
       );
     } else {
-      fetchWeather(51.5074, -0.1278, "London (Default)");
+      fetchWeather(9.9312, 76.2673, "Kochi (Fallback)");
     }
+
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = () => { window.location.href = '/'; };
   </script>
 </body>
 </html>
