@@ -114,7 +114,7 @@
       display: flex; flex-direction: column; align-items: center;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 20px 40px rgba(0, 0, 0, 0.5);
       width: 85vw; max-width: 350px;
-      height: 82dvh; /* FIXED: Now uses Dynamic Viewport Height */
+      height: 82dvh; /* FIXED: Now tracks dynamic layout boundaries */
       max-height: 700px;
       overflow-y: auto;
       animation: fadeInDown 0.8s ease-out;
@@ -190,7 +190,7 @@
   <div class="nav-bar"><a href="/" class="back-btn"><ion-icon name="chevron-back-outline"></ion-icon> Hub</a></div>
 
   <div class="weather-card" id="app-container">
-    <div style="color: #a1a1aa; margin-top: 50px; font-size: 14px; animation: pulse 1.5s infinite;">Syncing Atmosphere...</div>
+    <div style="color: #a1a1aa; margin-top: 50px; font-size: 14px; animation: pulse 1.5s infinite;">Pinpointing Location...</div>
   </div>
 
   <script>
@@ -209,6 +209,17 @@
       return { text: "Storm", icon: "thunderstorm", color: "#bc13fe", bgClass: "fx-storm" };
     };
 
+    // --- REVERSE GEOCODING LOOKUP ---
+    const getCityName = async (lat, lon) => {
+      try {
+        const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+        const data = await res.json();
+        return data.city || data.locality || "Current Location";
+      } catch (e) {
+        return "Current Location";
+      }
+    };
+
     const fetchWeather = async (lat, lon, label) => {
       try {
         const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=3`);
@@ -217,9 +228,7 @@
         const current = data.current_weather;
         const daily = data.daily;
         
-        // --- REAL LIVE WEATHER DATA ---
         const details = getWeatherDetails(current.weathercode, current.is_day); 
-        // ------------------------------
         
         bgFxLayer.className = details.bgClass;
 
@@ -262,11 +271,17 @@
       }
     };
 
+    // Resolves coordinates to real city name asynchronously before weather lookup
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude, "Current Location"),
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const cityName = await getCityName(lat, lon);
+          fetchWeather(lat, lon, cityName);
+        },
         () => fetchWeather(9.9312, 76.2673, "Kochi (Fallback)"),
-        { timeout: 1500 } 
+        { timeout: 3000 } 
       );
     } else {
       fetchWeather(9.9312, 76.2673, "Kochi (Fallback)");
