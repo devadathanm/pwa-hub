@@ -111,7 +111,7 @@
       -webkit-backdrop-filter: blur(30px);
       border-radius: 40px;
       padding: 30px;
-      display: flex; flex-direction: column; align-items: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 20px 40px rgba(0, 0, 0, 0.5);
       width: 85vw; max-width: 350px;
       height: 82dvh; /* FIXED: Now tracks dynamic layout boundaries */
@@ -180,6 +180,11 @@
     .forecast-day ion-icon { font-size: 24px; margin: 8px 0; }
     .f-date { font-size: 12px; color: #a1a1aa; }
     .f-temp { font-size: 14px; font-weight: 600; }
+
+    /* Premium Error State Elements */
+    .error-icon { font-size: 56px; color: #ff3b30; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(255,59,48,0.3)); }
+    .error-title { font-size: 18px; font-weight: 600; color: #ffffff; margin-bottom: 8px; text-align: center; }
+    .error-desc { font-size: 13px; color: #a1a1aa; max-width: 85%; line-height: 1.5; text-align: center; }
   </style>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 </head>
@@ -190,7 +195,7 @@
   <div class="nav-bar"><a href="/" class="back-btn"><ion-icon name="chevron-back-outline"></ion-icon> Hub</a></div>
 
   <div class="weather-card" id="app-container">
-    <div style="color: #a1a1aa; margin-top: 50px; font-size: 14px; animation: pulse 1.5s infinite;">Pinpointing Location...</div>
+    <div style="color: #a1a1aa; margin-top: 20px; font-size: 14px; animation: pulse 1.5s infinite;">Pinpointing Location...</div>
   </div>
 
   <script>
@@ -218,6 +223,16 @@
       } catch (e) {
         return "Current Location";
       }
+    };
+
+    // Renders Premium Error Interface when Geolocation Fails
+    const showLocationError = (title, message) => {
+      bgFxLayer.className = ""; // Wipe dynamic environmental effects
+      appContainer.innerHTML = `
+        <ion-icon name="location-off-outline" class="error-icon"></ion-icon>
+        <div class="error-title">${title}</div>
+        <div class="error-desc">${message}</div>
+      `;
     };
 
     const fetchWeather = async (lat, lon, label) => {
@@ -267,11 +282,11 @@
         appContainer.innerHTML = html;
 
       } catch (error) {
-        appContainer.innerHTML = `<div class="status-text" style="color:#ff3b30;">Atmosphere Sync Failed</div>`;
+        showLocationError("Sync Failure", "Unable to establish a secure link with weather systems.");
       }
     };
 
-    // Resolves coordinates to real city name asynchronously before weather lookup
+    // Strict location handler sequence with zero hardcoded fallbacks
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
@@ -280,11 +295,17 @@
           const cityName = await getCityName(lat, lon);
           fetchWeather(lat, lon, cityName);
         },
-        () => fetchWeather(9.9312, 76.2673, "Kochi (Fallback)"),
-        { timeout: 3000 } 
+        (error) => {
+          if (error.code === error.TIMEOUT) {
+            showLocationError("GPS Timeout", "Satellites took too long to resolve your positioning metrics.");
+          } else {
+            showLocationError("Location Blocked", "Please unblock location authorizations in your system settings to access local climate data.");
+          }
+        },
+        { timeout: 4000, enableHighAccuracy: true } 
       );
     } else {
-      fetchWeather(9.9312, 76.2673, "Kochi (Fallback)");
+      showLocationError("Telemetry Missing", "This physical device does not support satellite coordinate acquisition.");
     }
 
     window.history.pushState(null, null, window.location.href);

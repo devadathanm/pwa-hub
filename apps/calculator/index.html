@@ -9,12 +9,16 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0a0a0c">
   
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <style>
     /* iOS Viewport Lock & Cinematic Background */
     html, body {
       margin: 0; padding: 0;
       width: 100vw; 
-      height: 100dvh; /* FIXED: Now uses Dynamic Viewport Height */
+      height: 100dvh; 
       min-height: -webkit-fill-available;
       overscroll-behavior-y: none;
       background: linear-gradient(-45deg, #09090e, #13131f, #0c0c16, #050508);
@@ -65,24 +69,22 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* FLUID CALCULATOR CONTAINER */
+    /* PREMIUM CONTAINER - OPTIMIZED FOR ALL SCREEN RATIOS */
     .calc-container {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       border-radius: 40px;
-      padding: 20px;
-      width: 90vw;           
-      max-width: 360px;
-      height: 82dvh; /* FIXED: Now uses Dynamic Viewport Height */
-      max-height: 600px;
+      padding: 24px;
+      width: 88vw;           
+      max-width: 350px;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 20px 50px rgba(0, 0, 0, 0.5);
       display: flex;
       flex-direction: column;
-      gap: 10px;             
+      justify-content: space-between;
       animation: floatCard 8s infinite ease-in-out;
-      overflow: hidden;      
+      box-sizing: border-box;
     }
 
     @keyframes floatCard {
@@ -94,13 +96,14 @@
     .display {
       width: 100%;
       text-align: right;
-      padding: 10px 10px;
-      min-height: 80px;
+      padding: 20px 5px;
+      min-height: 90px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       overflow-wrap: break-word;
       flex-shrink: 0;
+      box-sizing: border-box;
     }
 
     .previous-operand {
@@ -113,67 +116,69 @@
 
     .current-operand {
       color: #ffffff;
-      font-size: clamp(40px, 10vw, 56px); 
+      font-size: clamp(42px, 11vw, 56px); 
       font-weight: 300;
-      letter-spacing: -2px;
-      line-height: 1;
+      letter-spacing: -1px;
+      line-height: 1.1;
     }
 
-    /* FLUID KEYPAD GRID */
+    /* THE FIXED GEOMETRIC GRID */
     .keypad {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(5, minmax(0, 1fr)); /* FIXED: Forces 5 equal rows so buttons never stretch */
-      gap: 10px;             
-      flex-grow: 1;
+      gap: 12px;             
+      width: 100%;
     }
 
     .btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.03);
-      border-radius: 100px; /* FIXED: Keeps pill shape */
-      width: 100%; /* FIXED: Locks width */
-      height: 100%; /* FIXED: Locks height */
+      border-radius: 50%;
+      width: 100%;
+      aspect-ratio: 1 / 1; /* FIXED: Forces standard buttons to be perfect circles */
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(18px, 6vw, 24px); 
+      font-size: clamp(20px, 6vw, 26px); 
       font-weight: 400;
       color: #ffffff;
       cursor: pointer;
       user-select: none;
-      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01);
+      box-sizing: border-box;
     }
 
-    /* ASMR satisfying click */
+    /* ASMR satisfying tactile snap click */
     .btn:active {
-      transform: scale(0.85);
+      transform: scale(0.90);
       background: rgba(255, 255, 255, 0.15);
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
     }
 
-    /* Special Buttons styling */
-    .btn.action { color: #a1a1aa; }
-    .btn.operator { color: #45f3ff; font-weight: 300; }
+    /* UI Coloring & Typography Accents */
+    .btn.action { color: #a1a1aa; font-size: clamp(16px, 5vw, 22px); }
+    .btn.operator { color: #45f3ff; font-weight: 300; font-size: clamp(22px, 6.5vw, 28px); }
     .btn.operator:active { background: rgba(69, 243, 255, 0.15); }
 
     .btn.equals {
-      background: rgba(69, 243, 255, 0.15);
+      background: rgba(69, 243, 255, 0.12);
       color: #45f3ff;
-      border-color: rgba(69, 243, 255, 0.3);
-      box-shadow: 0 0 20px rgba(69, 243, 255, 0.2);
+      border-color: rgba(69, 243, 255, 0.25);
+      box-shadow: 0 0 15px rgba(69, 243, 255, 0.15);
     }
     
     .btn.equals:active {
-      background: rgba(69, 243, 255, 0.3);
-      transform: scale(0.85);
+      background: rgba(69, 243, 255, 0.25);
     }
 
+    /* THE FIXED CAPSULE ZERO BUTTON */
     .btn.zero {
       grid-column: span 2;
+      aspect-ratio: auto;    /* Breaks out of 1:1 circle to build landscape capsule */
+      border-radius: 100px;  
+      height: 100%;          /* Locks vertical height to match structural row neighbors */
       justify-content: flex-start;
-      padding-left: 30px;
+      padding-left: clamp(20px, 8vw, 32px);
     }
   </style>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -299,7 +304,6 @@
       }
     }
 
-    // Android physical back button routing fix
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function () {
       window.location.href = '/';
