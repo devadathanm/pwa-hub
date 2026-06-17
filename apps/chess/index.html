@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chess</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../../index.html" class="back-btn">← Home</a>
+        <div class="title">Chess</div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="player">You: <span id="player-score">0</span></div>
+        <select id="diff-level">
+            <option value="1">Easy</option>
+            <option value="2">Hard</option>
+        </select>
+        <div class="player">AI: <span id="ai-score">0</span></div>
+    </div>
+
+    <div id="board" class="board"></div>
+
+    <script src="game.js"></script>
+</body>
+</html>
