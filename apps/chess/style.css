@@ -12,3 +12,12 @@ body { background: var(--bg); color: #f8fafc; font-family: sans-serif; display: 
 .selected { background: var(--accent) !important; color: white; }
 .last-move { background: rgba(250, 204, 21, 0.4) !important; }
 .piece { user-select: none; }
+
+/* ADDED: Explicit piece colors to fix the "all white" issue */
+.piece-w { 
+    color: #ffffff !important; 
+    text-shadow: 0 0 4px rgba(0,0,0,0.5); /* Drop shadow so white pieces stand out */
+}
+.piece-b { 
+    color: #0f172a !important; /* Dark slate blue for black pieces */
+}

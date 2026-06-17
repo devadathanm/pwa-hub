@@ -9,9 +9,10 @@ let lastMove = { from: null, to: null };
 let playerScore = 0;
 let aiScore = 0;
 
+// FIX 1: Use the "filled" Unicode symbols so CSS can color them properly
 function getPieceSymbol(type, color) {
-    const symbols = { p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔' };
-    return color === 'w' ? symbols[type].toUpperCase() : symbols[type].toLowerCase();
+    const symbols = { p: '♟', r: '♜', n: '♞', b: '♝', q: '♛', k: '♚' };
+    return symbols[type];
 }
 
 function makeComputerMove() {
@@ -22,6 +23,12 @@ function makeComputerMove() {
     if (diffLevel.value == "2") {
         const captures = moves.filter(m => m.flags.includes('c'));
         if (captures.length > 0) move = captures[0];
+    }
+
+    // FIX 2: Give the AI points when it captures your piece
+    if (move.flags.includes('c')) {
+        aiScore += (move.captured === 'p'?1:move.captured==='n'||move.captured==='b'?3:move.captured==='r'?5:9);
+        aiScoreEl.textContent = aiScore;
     }
 
     lastMove = { from: move.from, to: move.to };
@@ -40,9 +47,10 @@ function onSquareTouch(squareElement) {
     } else {
         const move = chess.move({ from: selectedSquare, to: square, promotion: 'q' });
         if (move) {
+            // FIX 3: Give YOU points when you capture an AI piece (changed from aiScore to playerScore)
             if (move.flags.includes('c')) {
-                aiScore += (move.captured === 'p'?1:move.captured==='n'||move.captured==='b'?3:move.captured==='r'?5:9);
-                aiScoreEl.textContent = aiScore;
+                playerScore += (move.captured === 'p'?1:move.captured==='n'||move.captured==='b'?3:move.captured==='r'?5:9);
+                playerScoreEl.textContent = playerScore;
             }
             lastMove = { from: move.from, to: move.to };
             renderBoard();
@@ -69,11 +77,16 @@ function renderBoard() {
             const piece = board[i][j];
             if (piece) {
                 const span = document.createElement('span');
-                span.className = 'piece';
+                // FIX 4: Add the specific 'piece-w' or 'piece-b' class based on the piece color
+                span.className = `piece ${piece.color === 'w' ? 'piece-w' : 'piece-b'}`;
                 span.textContent = getPieceSymbol(piece.type, piece.color);
                 squareEl.appendChild(span);
             }
+            
+            // Added both touchstart (for mobile) and mousedown (for testing on your laptop)
             squareEl.addEventListener('touchstart', (e) => { e.preventDefault(); onSquareTouch(squareEl); });
+            squareEl.addEventListener('mousedown', (e) => { e.preventDefault(); onSquareTouch(squareEl); });
+            
             boardElement.appendChild(squareEl);
         }
     }
